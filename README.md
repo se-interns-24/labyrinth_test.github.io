@@ -1,52 +1,52 @@
 # Labyrinth Game 🎮
 
-## introduction
+## Introdução
 
-Welcome to the Labyrinth Game, a maze challenge implemented with JavaScript, HTML and CSS.
+Bem-vindo ao Labyrinth Game, um desafio de labirinto implementado com JavaScript, HTML e CSS.
 
-## Instructions for playing 🕹️
+## Instruções de Jogo 🕹️
 
-1. Open [Game](https://carloseduts.github.io/Labyrinth-Game/) in your web browser.
-2. Use the arrow keys on your keyboard to move the character through the maze.
-3. The goal is to find your way out of the maze as quickly as possible!
+1. Abra o [Jogo](https://carloseduts.github.io/Labyrinth-Game/) em seu navegador da web.
+2. Use as teclas de seta do teclado para mover o personagem através do labirinto.
+3. O objetivo é encontrar a saída do labirinto o mais rápido possível!
 
-## Principle functions ⭐
+## Funcionalidades Principais ⭐
 
-- CIntuitive control using the arrow keys.
-- Built-in timer to track time spent playing the game.
-- Friendly and accessible graphical interface.
+- Controle intuitivo utilizando as teclas de seta.
+- Temporizador integrado para acompanhar o tempo gasto no jogo.
+- Interface gráfica amigável e acessível.
 
-## Installation instructions🛠️
+## Instalação 🛠️
 
-1. Clone this repository to your local machine:
+1. Clone este repositório em sua máquina local:
 
    ```bash
    git clone https://github.com/CarlosEduts/Labyrinth-Game
    ```
 
-2. Open the `index.html` file in your browser.
+2. Abra o arquivo `index.html` em seu navegador.
 
-## Contributors 🤝
+## Contribuições 🤝
 
-Contributions are welcome! Feel free to open an issue or send a pull request.
+Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
 
-## Author 👨‍💻
+## Autor 👨‍💻
 
-The Labyrinth Game was developed by [Carlos Eduardo](https://github.com/CarlosEduts).
+O Labyrinth Game foi desenvolvido por [Carlos Eduardo](https://github.com/CarlosEduts).
 
-## Credits 🎨
+## Créditos dos Ícones 🎨
 
-The icons used in this project were provided by the Tabler Icons library. Tabler Icons is a high-quality icon font, freely available to developers. For more information about the library and to explore its vast collection of icons, visit [https://tabler.io/icons](https://tabler.io/icons).
+Os ícones utilizados neste projeto foram cedidos pela biblioteca Tabler Icons. A Tabler Icons é uma fonte de ícones de alta qualidade, disponibilizada gratuitamente para desenvolvedores. Para mais informações sobre a biblioteca e para explorar sua vasta coleção de ícones, visite [https://tabler.io/icons](https://tabler.io/icons).
 
-## Licenses 📝
+## Licença 📝
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` para obter mais detalhes.
 
-## Online access to the game 🌐
+## Página do Jogo Online 🌐
 
-Access the Game [Here!](https://carloseduts.github.io/Labyrinth-Game/).
+Acesse o Jogo [Aqui!](https://carloseduts.github.io/Labyrinth-Game/).
 
-## Images used in the project 🖼️
+## Imagens do Projeto 🖼️
 
 <img src="./images/203051_carloseduts.github.io.jpeg" alt="Página Inicial" width="200px">
 <img src="./images/201558_carloseduts.github.io.jpeg" alt="Em Jogo" width="200px">
