@@ -207,21 +207,5 @@ function initialize() {
   renderPlayer(size);
 }
 
-// Handle Login
-document.getElementById('loginForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const username = document.getElementById('username').value;
-  const response = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username })
-  });
-  const data = await response.json();
-  document.getElementById('message').innerText = `Welcome ${data.username}, you have played ${data.playCount} times.`;
-  document.getElementById('login-container').style.display = 'none'; // Hide login container
-  initialize(); // Start the game
-});
-
-// Ensure game only starts after login
-// Comment out this line if you want to start the game without login
-// initialize();
+// Iniciar Jogo
+initialize();
