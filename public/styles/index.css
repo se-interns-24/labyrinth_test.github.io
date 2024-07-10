@@ -54,6 +54,8 @@ p {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 100%; /* Ensuring full width */
+  max-width: 100%; /* Adjust if necessary for your layout */
 }
 
 /* Page: index.html */
@@ -82,9 +84,10 @@ p {
 }
 
 .maps {
-  display: flex;
-  flex-direction: column;
+  width: 100%; /* Ensure this does not restrict the canvas or game display */
+  max-width: none; /* Remove max-width or adjust it to fit the game's needs */
 }
+
 
 .map {
   width: 100%;
@@ -114,10 +117,12 @@ canvas {
   background-color: #899ba5;
   border: 2px solid var(--light);
   border-radius: 8px;
-  padding: 0px 2rem;
-  width: 100%;
-  max-width: 760px;
+  width: 100%; /* Ensure the container has enough width */
+  max-width: 100%; /* Possibly increase or remove max-width if needed */
+  display: block; /* Ensures the canvas does not have extra space around it */
+  margin: auto; /* Center the canvas if smaller than its container */
 }
+
 
 .buttonsControl > button {
   width: 75px;

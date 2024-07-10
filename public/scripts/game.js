@@ -1,211 +1,128 @@
-const canvas = document.querySelector("#canvas");
-const context = canvas.getContext("2d");
-const time = document.querySelectorAll(".time");
-const victoryPage = document.querySelector(".victory");
-const buttonsControl = document.querySelector(".buttonsControl");
-const redirect = document.querySelector(".redirect");
-const currentURL = window.location.href;
-const gameLevel = currentURL.substring(currentURL.indexOf("game") + 12);
-const canvasWidth = 380;
+document.addEventListener('DOMContentLoaded', function() {
+  const emailForm = document.getElementById('emailForm');
+  const emailMessage = document.getElementById('emailMessage');
+  const canvas = document.querySelector("#canvas");
+  const context = canvas.getContext("2d");
+  const currentURL = window.location.href;
+  const gameLevel = currentURL.substring(currentURL.indexOf("game") + 12);
+  let size = tileSize(currentURL.substring(currentURL.indexOf("game") + 11)[0]);
 
-const colors = {
-  player: "#0903A6",
-  wall: "#000",
-  background: "#899ba5",
-  exit: "#f2e935",
-};
+  // Listen for form submissions
+  emailForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = emailForm.email.value; // Assuming your input has a name="email"
+      resetGameState(); // Reset game state before re-initialization
+      fetch('/add-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+      })
+      .then(response => response.text())
+      .then(message => {
+          emailMessage.innerText = message;
+          initialize(); // Re-initialize the game only after the email has been successfully submitted
+      });
+  });
 
-let player = {
-  x: 0,
-  y: 0,
-  movX: 0,
-  movY: 0,
-};
-
-let collisions = {
-  wallX: [],
-  wallY: [],
-  exit: [],
-};
-
-let timeElapsed = 0;
-let canvasHeight = 0;
-
-// Verificar tamanho dos Pixel a partir do valor passado (Valor no início da URL)
-function tileSize(size) {
-  // Labirinto pequeno "#p"
-  if (size == "p") {
-    return 18;
+  function tileSize(sizeIndicator) {
+      switch(sizeIndicator) {
+          case 'p': return 18;
+          case 'm': return 14;
+          case 'g': return 12;
+          case 'e': return 8;
+          default: return 10; // Default size
+      }
   }
 
-  // Labirinto médio "#m"
-  if (size == "m") {
-    return 14;
+  function resetGameState() {
+      timeElapsed = 0;
+      document.getElementById('emailForm').reset();
+      emailMessage.innerText = '';
+      player = { x: 0, y: 0, movX: 0, movY: 0 };
+      collisions = { wallX: [], wallY: [], exit: [] };
+      context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
   }
 
-  // Labirinto grande "#g"
-  if (size == "g") {
-    return 12;
+  function initialize() {
+      canvas.width = canvasWidth;
+      canvas.height = calculateCanvasHeight();
+      timer();
+      captureCollisions();
+      renderScene();
+      document.addEventListener("keydown", handlePlayerMovement);
   }
 
-  // Labirinto Extra grande "#e"
-  if (size == "e") {
-    return 8;
-  }
-}
-let size = tileSize(currentURL.substring(currentURL.indexOf("game") + 11)[0]);
-
-// Função do Temporizador do Jogo
-function timer() {
-  setInterval(() => {
-    timeElapsed += 1;
-    time[1].innerText = `Time elapsed: ${timeElapsed} s`;
-  }, 1000);
-}
-
-// Fução a execultar se o jogador vencer
-function victory() {
-  buttonsControl.style.display = "none";
-  victoryPage.style.display = "flex";
-  time[0].innerText = `Time of play: ${timeElapsed}s`;
-  let timer = 10;
-
-  setInterval(() => {
-    redirect.innerText = `you will be redirected to the home page in ${timer} seconds.`;
-    timer--;
-  }, 1000);
-
-  setTimeout(() => {
-    window.location.href = "https://se-interns-24.github.io/labyrinth_test.github.io/public/";
-  }, 10000);
-}
-
-// Captura as colisões das Paredes, Saída e Jogador
-function captureCollisions() {
-  let xAxis = 0;
-  let yAxis = 0;
-
-  for (const item of gameLevel) {
-    if (item === "n") {
-      yAxis += 1;
-      xAxis = 0;
-      canvasHeight += 1;
-    } else if (item === "#") {
-      collisions.wallX.push(xAxis);
-      collisions.wallY.push(yAxis);
-    } else if (item === "s") {
-      collisions.exit.push(xAxis, yAxis);
-    } else if (item == "@") {
-      player.x = xAxis;
-      player.y = yAxis;
-    }
-
-    xAxis += 1;
-  }
-}
-
-// Função que verifica a cor do Pixel a partir de um valor
-function setColor(item) {
-  switch (item) {
-    case "#":
-      context.fillStyle = colors.wall;
-      break;
-    case "s":
-      context.fillStyle = colors.exit;
-      break;
-    default:
-      context.fillStyle = colors.background;
-      break;
-  }
-}
-
-// Função renderizadora do cenário
-function renderScene() {
-  let xAxis = 0;
-  let yAxis = 0;
-
-  for (const item of gameLevel) {
-    if (item === "n") {
-      yAxis++;
-      xAxis = 0;
-      canvasHeight++;
-    } else {
-      xAxis++;
-    }
-
-    setColor(item);
-    context.fillRect(xAxis * size, yAxis * size, size, size);
-  }
-}
-
-// Função que verifica Colisões e renderizo o player
-function renderPlayer() {
-  // Limpa o canvas e Renderiza o cenário
-  context.clearRect(
-    0,
-    0,
-    canvasWidth * size,
-    (gameLevel.length / canvasWidth + 2) * size
-  );
-  renderScene(size);
-
-  // Verifica se o jogador alcançou a saída
-  if (
-    collisions.exit[0] === player.x + player.movX &&
-    collisions.exit[1] === player.y + player.movY
-  ) {
-    victory();
+  function calculateCanvasHeight() {
+      return (canvasHeight + 2) * size;
   }
 
-  // Define a cor do jogador
-  context.fillStyle = colors.player;
-
-  // Verifica colisões
-  for (let i = 0; i < collisions.wallY.length; i++) {
-    if (
-      collisions.wallY[i] === player.y + player.movY &&
-      collisions.wallX[i] === player.x + player.movX
-    ) {
-      player.movX = 0;
-      player.movY = 0;
-    }
+  function timer() {
+      setInterval(() => {
+          timeElapsed++;
+          emailMessage.innerText = `Time elapsed: ${timeElapsed} s`; // Display time on the email message for visibility
+      }, 1000);
   }
-  context.fillRect(
-    (player.x + player.movX) * size,
-    (player.y + player.movY) * size,
-    size,
-    size
-  );
-}
 
-// Capturar Click do Jogador
-document.addEventListener("keydown", (e) => {
-  switch (e.key) {
-    case "ArrowRight":
-      player.movX += 1;
-      break;
-    case "ArrowLeft":
-      player.movX -= 1;
-      break;
-    case "ArrowUp":
-      player.movY -= 1;
-      break;
-    case "ArrowDown":
-      player.movY += 1;
-      break;
-    default:
-      break;
+  function captureCollisions() {
+      let xAxis = 0, yAxis = 0;
+      gameLevel.split('').forEach(char => {
+          if (char === 'n') {
+              yAxis++;
+              xAxis = 0;
+          } else {
+              if (char === '#') { collisions.wallX.push(xAxis); collisions.wallY.push(yAxis); }
+              else if (char === 's') { collisions.exit.push(xAxis, yAxis); }
+              else if (char === '@') { player.x = xAxis; player.y = yAxis; }
+              xAxis++;
+          }
+      });
   }
-  renderPlayer();
+
+  function renderScene() {
+      for (let y = 0, yAxis = 0; y < gameLevel.length; y++) {
+          const item = gameLevel.charAt(y);
+          if (item === 'n') {
+              yAxis++;
+          } else {
+              setColor(item);
+              context.fillRect(y % canvasWidth * size, yAxis * size, size, size);
+          }
+      }
+  }
+
+  function handlePlayerMovement(event) {
+      switch (event.key) {
+          case "ArrowRight": player.movX = 1; break;
+          case "ArrowLeft": player.movX = -1; break;
+          case "ArrowUp": player.movY = -1; break;
+          case "ArrowDown": player.movY = 1; break;
+      }
+      renderPlayer();
+  }
+
+  function setColor(item) {
+      if (item === '#') context.fillStyle = colors.wall;
+      else if (item === 's') context.fillStyle = colors.exit;
+      else context.fillStyle = colors.background;
+  }
+
+  function renderPlayer() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      renderScene();
+      context.fillStyle = colors.player;
+      context.fillRect((player.x + player.movX) * size, (player.y + player.movY) * size, size, size);
+  }
 });
 
-// Função de iniciar Jogo
-function initialize() {
-  timer();
-  captureCollisions();
-  canvas.height = (canvasHeight + 2) * size;
-  renderPlayer(size);
-}
+const colors = {
+player: "#0903A6",
+wall: "#000",
+background: "#899ba5",
+exit: "#f2e935",
+};
 
-// Iniciar Jogo
-initialize();
+let player = { x: 0, y: 0, movX: 0, movY: 0 };
+let collisions = { wallX: [], wallY: [], exit: [] };
+let timeElapsed = 0;
+let canvasHeight = 0;
+let canvasWidth = 380; // Ensure this is set based on your canvas element's actual size
