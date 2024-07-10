@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Labyrinth Game: Home</title>
+    <!-- Link: .CSS -->
+    <link rel="stylesheet" href="./styles/index.css" />
+</head>
+<body>
+    <h2>Login</h2>
+    <div id="message"></div>
+
+    <h2>Submit Email</h2>
+    <form id="emailForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="emailMessage"></div>
+    
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const response = await fetch('/add-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const message = await response.text();
+            document.getElementById('emailMessage').innerText = message;
+            if (response.ok) {
+                enablePlayButtons();
+            }
+        });
+
+        function enablePlayButtons() {
+            const playButtons = document.querySelectorAll('.primaryButton');
+            playButtons.forEach(button => {
+                button.disabled = false;
+            });
+        }
+
+        // Initially disable the play buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const playButtons = document.querySelectorAll('.primaryButton');
+            playButtons.forEach(button => {
+                button.disabled = true;
+            });
+        });
+    </script>
+
+    <div class="container">
+        <div>
+            <h1 class="title">Labyrinth <br />Game</h1>
+        </div>
+        <div class="maps">
+            <div class="map">
+                <h2>Simple Labyrinth 1</h2>
+                <p>edited by: Hashicorp Solutions Engineer Interns 2024</p>
+                <form action="https://se-interns-24.github.io/labyrinth_test.github.io/pages/game.html?#p####################n#@.................#n#####.###.####.#####n#.....#.#....#.....#n#.###.#.#.##.#.###.#n#.#.#...#..#.#.#.#.#n#.#.######.#####.#.#n#...#....#.......###n#.#...##.#.##.######n#.######.#..#.....##n#..#s....##.#####.##n####################">
+                    <input type="submit" value="play" class="primaryButton" />
+                </form>
+            </div>
+            <div class="map">
+                <h2>Simple Labyrinth 2</h2>
+                <p>edited by: Hashicorp Solutions Engineer Interns 2024</p>
+                <form action="https://se-interns-24.github.io/labyrinth_test.github.io/pages/game.html?#m#######################n#@.............#......#n#.###.#######.#.###.###n#.#...#.....#.#.#.....#n#.#.#.#.###.#.#.#.###.#n#...#.#...#.#...#.#...#n#.###.#.#.#.#####.#.#.#n#.#...#.#.#.....#.#.#.#n#.#####.#.#######.#.#.#n#.....#.#...#.....#...#n#.###.#.###.#.#######.#n#.#...#.....#.#.......#n#.###########.#.#####.#n#.............#.....s.#n#######################">
+                    <input type="submit" value="play" class="primaryButton" />
+                </form>
+            </div>
+            <div class="map">
+                <h2>Medium Labyrinth 1</h2>
+                <p>edited by: Hashicorp Solutions Engineer Interns 2024</p>
+                <form action="https://se-interns-24.github.io/labyrinth_test.github.io/pages/game.html?#g#############################n#@..........................#n###.###.###.###.###.###.###.#n#.#...#.#...#.#...#.#.......#n#.###.#.###.#.#.###.#.#####.#n#...#.#.....#.#.#.....#...#.#n###.#.#######.#.#######.#.#.#n#...#.........#.......#...#.#n#.###.#####.#########.###.#.#n#.....#...#.#.........#...#.#n#.#####.#.#.#########.###.#.#n#.#...#.#.#.....#.....#...#.#n#.#.#.#.#.#####.#.#####.#.#.#n#...#.#.....#...#.......#.#.#n#.#######.#.#.###########.#.#n#.......#.#.#.#...........#.#n#######.#.#.#.###############n#.......#...#..............s#n#############################">
+                    <input type="submit" value="play" class="primaryButton" />
+                </form>
+            </div>
+            <div class="map">
+                <h2>Medium Labyrinth 2</h2>
+                <p>edited by: Hashicorp Solutions Engineer Interns 2024</p>
+                <form action="https://se-interns-24.github.io/labyrinth_test.github.io/pages/game.html?#e###################################n#@................................#n#.#.###.###.###.###.###.###.###.###n#.#.#...#...#.#.....#.#...#.#...#s#n#.###.#.#.#.#.#.#####.#.#.###.#.#.#n#.....#.#.#.#.....#.#.#.#...#.#.#.#n#.#####.#.#.#####.#.#.#.#.#####.#.#n#.#.....#.#.....#.#.#.#.#.....#.#.#n#.#####.#.#####.#.#.#.#.#####.#.#.#n#.#.....#.......#.#.#.#.......#.#.#n#.#############.#.#.#.#########.#.#n#.............#.#...#...........#.#n#############.#.###############.#.#n#...........#.#.#...............#.#n#.#########.#.#.###############.#.#n#.........#...#.................#.#n#########.#.#####################.#n#.........#.......................#n###################################">
+                    <input type="submit" value="play" class="primaryButton" />
+                </form>
+            </div>
+            <div class="map">
+                <h2>Difficult Labyrinth 1</h2>
+                <p>edited by: Hashicorp Solutions Engineer Interns 2024</p>
+                <form action="https://se-interns-24.github.io/labyrinth_test.github.io/pages/game.html?#e###########################################n#@......#...........#.....#.........#.....#n#.###.#.#.#####.#.#.#.###.#.#####.#.#.###.#n#...#.#.#.#...#.#.#.#.#...#.#...#.#.#.#...#n#.###.#.#.#.#.#.#.#.#.#.###.#.#.#.#.#.#.###n#.#...#.#...#.#.#.#...#.#...#.#.#.#.#...#.#n#.#.#####.#.#.#.#.#####.#.#####.#.#.#####.#n#.#.#.....#.#.#.#...#...#.....#...#.....#.#n#.#.#.#####.#.#.###.#.#######.###.#.###.#.#n#.#.#.#...#...#...#.#...#...#.#...#.#...#.#n#.#.#.#.#.#######.#.###.#.#.#.#####.#.#.#.#n#.#.#...#.....#...#.....#.#.#.#.....#.#.#.#n#.###########.#.###.#######.#.#.#######.#.#n#.....#.....#.#.#...#.....#.#.#...#...#.#.#n#.###.#.#.#.#.#.###.#.###.#.#.###.#.#.#.#.#n#.#...#.#.#.#.#.#...#.#.#.#.#...#.#.#.#.#.#n#.###.#.#.#.###.#.###.#.#.#####.#.#.###.#.#n#.#...#...#.....#.#...#.#.....#.#.#...#...#n#.#.#######.#####.#.###.#####.#.#.###.###.#n#.............#.....#.......#...#.....#s..#n###########################################">
+                    <input type="submit" value="play" class="primaryButton" />
+                </form>
+            </div>
+        </div>
+        <div class="copy">
+            <p>&copy; 2024 / <a href="https://github.com/se-interns-24">Shelly</a></p>
+        </div>
+    </div>
+</body>
+</html>
