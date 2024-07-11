@@ -76,7 +76,7 @@ function victory() {
   }, 1000);
 
   setTimeout(() => {
-    window.location.href = "https://se-interns-24.github.io/labyrinth_test.github.io/";
+    window.location.href = "https://se-interns-24.github.io/labyrinth_test.github.io/public/";
   }, 10000);
 }
 
