@@ -69,7 +69,6 @@ connection.connect((err) => {
       return;
     }
     if (result[0].count === 0) {
-      // Constraint does not exist, add it
       const addUniqueConstraintQuery = `
         ALTER TABLE users
         ADD UNIQUE (email);
