@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const timeDisplay = document.querySelector(".time");
   const victoryPage = document.querySelector(".victory");
   const buttonsControl = document.querySelector(".buttonsControl");
+  const currentURL = window.location.href;
 
   const colors = {
     player: "#0903A6",
