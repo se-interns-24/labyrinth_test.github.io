@@ -1,4 +1,12 @@
-const canvas = document.querySelector("#canvas");
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Page loaded, initializing game.");
+  const canvas = document.querySelector("#canvas");
+  if (!canvas) {
+      console.error("Canvas element not found!");
+      return;
+  }
+
 const context = canvas.getContext("2d");
 const time = document.querySelectorAll(".time");
 const victoryPage = document.querySelector(".victory");
@@ -209,3 +217,4 @@ function initialize() {
 
 // Iniciar Jogo
 initialize();
+});
