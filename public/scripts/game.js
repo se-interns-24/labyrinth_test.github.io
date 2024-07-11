@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const timeDisplay = document.querySelector(".time");
   const victoryPage = document.querySelector(".victory");
   const buttonsControl = document.querySelector(".buttonsControl");
+  const gameLevel = currentURL.substring(currentURL.indexOf("game") + 12);
 
   const colors = {
     player: "#0903A6",
@@ -34,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
   let timeElapsed = 0;
   let canvasHeight = 0;
 
-  let gameLevel = decodeURIComponent(window.location.search.substring(1)); // Assumes level data in URL
 
   function tileSize(size) {
     if (size == "p") {
@@ -45,12 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
       return 12;
     } else if (size == "e") {
       return 8;
-    } else {
-      return 20; // Default size
-    }
+    } 
   }
 
-  let size = tileSize(gameLevel[0]);
+  let size = tileSize(currentURL.substring(currentURL.indexOf("game") + 11)[0]);
 
   function timer() {
     setInterval(() => {
@@ -136,8 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     context.clearRect(
       0,
       0,
-      canvas.width,
-      canvas.height
+      canvas.width * size, (gameLevel.length / canvas.width + 2) * size
     );
     renderScene();
   
