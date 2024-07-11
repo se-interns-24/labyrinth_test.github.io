@@ -71,7 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   
     setTimeout(() => {
-      window.location.href = "https://se-interns-24.github.io/labyrinth_test.github.io/public/";
+      const hostname = window.location.hostname;
+      const port = window.location.port;
+      window.location.href = `http://${hostname}:${port}`;
     }, 10000);
   }
 
