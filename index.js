@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 
 const app = express();
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 app.use(bodyParser.json());
 
 const dbConfig = {
@@ -53,16 +54,36 @@ connection.connect((err) => {
   });
 
   // Ensure the 'email' column is unique
-  const addUniqueConstraintQuery = `
-    ALTER TABLE users
-    ADD UNIQUE (email);
+  const checkUniqueConstraintQuery = `
+    SELECT COUNT(*) AS count
+    FROM information_schema.table_constraints
+    WHERE table_schema = 'labyrinth-database' 
+      AND table_name = 'users' 
+      AND constraint_type = 'UNIQUE'
+      AND constraint_name = 'email';
   `;
-  connection.query(addUniqueConstraintQuery, (err, result) => {
-    if (err && err.code !== 'ER_DUP_KEYNAME') {
-      console.error('Failed to add unique constraint:', err);
+
+  connection.query(checkUniqueConstraintQuery, (err, result) => {
+    if (err) {
+      console.error('Failed to check for unique constraint:', err);
       return;
     }
-    console.log('Unique constraint on email column ensured.');
+    if (result[0].count === 0) {
+      // Constraint does not exist, add it
+      const addUniqueConstraintQuery = `
+        ALTER TABLE users
+        ADD UNIQUE (email);
+      `;
+      connection.query(addUniqueConstraintQuery, (err, result) => {
+        if (err) {
+          console.error('Failed to add unique constraint:', err);
+          return;
+        }
+        console.log('Unique constraint on email column added.');
+      });
+    } else {
+      console.log('Unique constraint on email column already exists.');
+    }
   });
 });
 
