@@ -7,10 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   const context = canvas.getContext("2d");
-  const timeDisplay = document.querySelector(".time");
+  const timeDisplay = document.querySelectorAll(".time");
   const victoryPage = document.querySelector(".victory");
   const buttonsControl = document.querySelector(".buttonsControl");
   const currentURL = window.location.href;
+  const urlParams = new URLSearchParams(window.location.search);
+  const levelName = urlParams.get('level');
+  const canvasWidth = 380;
 
   const colors = {
     player: "#0903A6",
@@ -20,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   let player = {
-    x: 0,
-    y: 0,
+    x: 1,
+    y: 1,
     movX: 0,
     movY: 0,
   };
@@ -35,8 +38,22 @@ document.addEventListener('DOMContentLoaded', function() {
   let timeElapsed = 0;
   let canvasHeight = 0;
 
-  let gameLevel = decodeURIComponent(window.location.search.substring(1)); // Assumes level data in URL
+  const levels = {
+    level1: "####################n#..................#n#####.###.####.#####n#.....#.#....#.....#n#.###.#.#.##.#.###.#n#.#.#...#..#.#.#.#.#n#.#.######.#####.#.#n#...#....#.......###n#.#...##.#.##.######n#.######.#..#.....##n#..#s....##.#####.##n####################",
+    level2: "#######################n#.............#......#n#.###.#######.#.###.###n#.#...#.....#.#.#.....#n#.#.#.#.###.#.#.#.###.#n#...#.#...#.#...#.#...#n#.###.#.#.#.#####.#.#.#n#.#...#.#.#.....#.#.#.#n#.#####.#.#######.#.#.#n#.....#.#...#.....#...#n#.###.#.###.#.#######.#n#.#...#.....#.#.......#n#.###########.#.#####.#n#.............#.....s.#n#######################",
+    level3: "#############################n#..........................#n###.###.###.###.###.###.###.#n#.#...#.#...#.#...#.#.......#n#.###.#.###.#.#.###.#.#####.#n#...#.#.....#.#.#.....#...#.#n###.#.#######.#.#######.#.#.#n#...#.........#.......#...#.#n#.###.#####.#########.###.#.#n#.....#...#.#.........#...#.#n#.#####.#.#.#########.###.#.#n#.#...#.#.#.....#.....#...#.#n#.#.#.#.#.#####.#.#####.#.#.#n#...#.#.....#...#.......#.#.#n#.#######.#.#.###########.#.#n#.......#.#.#.#...........#.#n#######.#.#.#.###############n#.......#...#..............s#n#############################",
+    level4: "###################################n#................................#n#.#.###.###.###.###.###.###.###.###n#.#.#...#...#.#.....#.#...#.#...#s#n#.###.#.#.#.#.#.#####.#.#.###.#.#.#n#.....#.#.#.#.....#.#.#.#...#.#.#.#n#.#####.#.#.#####.#.#.#.#.#####.#.#n#.#.....#.#.....#.#.#.#.#.....#.#.#n#.#####.#.#####.#.#.#.#.#####.#.#.#n#.#.....#.......#.#.#.#.......#.#.#n#.#############.#.#.#.#########.#.#n#.............#.#...#...........#.#n#############.#.###############.#.#n#...........#.#.#...............#.#n#.#########.#.#.###############.#.#n#.........#...#.................#.#n#########.#.#####################.#n#.........#.......................#n###################################",
+    level5: "###########################################n#......#...........#.....#.........#.....#n#.###.#.#.#####.#.#.#.###.#.#####.#.#.###.#n#...#.#.#.#...#.#.#.#.#...#.#...#.#.#.#...#n#.###.#.#.#.#.#.#.#.#.#.###.#.#.#.#.#.#.###n#.#...#.#...#.#.#.#...#.#...#.#.#.#.#...#.#n#.#.#####.#.#.#.#.#####.#.#####.#.#.#####.#n#.#.#.....#.#.#.#...#...#.....#...#.....#.#n#.#.#.#####.#.#.###.#.#######.###.#.###.#.#n#.#.#.#...#...#...#.#...#...#.#...#.#...#.#n#.#.#.#.#.#######.#.###.#.#.#.#####.#.#.#.#n#.#.#...#.....#...#.....#.#.#.#.....#.#.#.#n#.###########.#.###.#######.#.#.#######.#.#n#.....#.....#.#.#...#.....#.#.#...#...#.#.#n#.###.#.#.#.#.#.###.#.###.#.#.###.#.#.#.#.#n#.#...#.#.#.#.#.#...#.#.#.#.#...#.#.#.#.#.#n#.###.#.#.#.###.#.###.#.#.#####.#.#.###.#.#n#.#...#...#.....#.#...#.#.....#.#.#...#...#n#.#.#######.#####.#.###.#####.#.#.###.###.#n#.............#.....#.......#...#.....#s..#n###########################################"
+  };
 
+  let gameLevel = levels[levelName];
+  console.log("Current URL:", currentURL);
+  console.log("Game Level:", gameLevel); 
+
+  if (!gameLevel) {
+      console.error("Game level data not found in URL.");
+      return;
+  }
   function tileSize(size) {
     if (size == "p") {
       return 18;
@@ -46,12 +63,14 @@ document.addEventListener('DOMContentLoaded', function() {
       return 12;
     } else if (size == "e") {
       return 8;
-    } else {
-      return 20; // Default size
+    } 
+    else {
+      return 20;
     }
   }
 
-  let size = tileSize(currentURL.substring(currentURL.indexOf("game") + 11)[0]);
+  let size = tileSize( currentURL.substring(currentURL.indexOf("game.html?#") + 11)[0]);
+  console.log("Tile size:", size);
 
   function timer() {
     setInterval(() => {
@@ -80,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function captureCollisions() {
     let xAxis = 0;
+
     let yAxis = 0;
   
     for (const item of gameLevel) {
@@ -99,6 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
       xAxis += 1;
     }
+    console.log("Collisions captured:", collisions);
+    console.log("Player initial position:", player);
   }
   
   function setColor(item) {
@@ -127,10 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         xAxis++;
       }
-  
       setColor(item);
-      context.fillRect(xAxis * size, yAxis * size, size, size);
+    context.fillRect(xAxis * size, yAxis * size, size, size);
     }
+    console.log("Scene rendered.");
   }
 
   function renderPlayer() {
@@ -166,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
       size,
       size
     );
+    console.log("Player rendered at:", player.x, player.y);
   }
   
   document.addEventListener("keydown", (e) => {
@@ -193,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     captureCollisions();
     canvas.height = (canvasHeight + 2) * size;
     renderPlayer(size);
+    console.log("Game initialized.");
   }
 
   initialize();
