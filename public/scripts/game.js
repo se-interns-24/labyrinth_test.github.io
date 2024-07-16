@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log("Page loaded, initializing game.");
+  
   const canvas = document.querySelector("#canvas");
   if (!canvas) {
       console.error("Canvas element not found!");
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const timeDisplay = document.querySelectorAll(".time");
   const victoryPage = document.querySelector(".victory");
   const buttonsControl = document.querySelector(".buttonsControl");
+  const redirect = document.querySelector(".redirect");
   const currentURL = window.location.href;
   const urlParams = new URLSearchParams(window.location.search);
   const levelName = urlParams.get('level');
@@ -25,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let player = {
     x: 1,
     y: 1,
-    movX: 0,
-    movY: 0,
+    movX: 0, // Horizontal movement
+    movY: 0, // Vertical movement
   };
 
   let collisions = {
@@ -37,52 +39,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let timeElapsed = 0;
   let canvasHeight = 0;
+  let canvasColumns = 0;
 
   const levels = {
     level1: "####################n#..................#n#####.###.####.#####n#.....#.#....#.....#n#.###.#.#.##.#.###.#n#.#.#...#..#.#.#.#.#n#.#.######.#####.#.#n#...#....#.......###n#.#...##.#.##.######n#.######.#..#.....##n#..#s....##.#####.##n####################",
     level2: "#######################n#.............#......#n#.###.#######.#.###.###n#.#...#.....#.#.#.....#n#.#.#.#.###.#.#.#.###.#n#...#.#...#.#...#.#...#n#.###.#.#.#.#####.#.#.#n#.#...#.#.#.....#.#.#.#n#.#####.#.#######.#.#.#n#.....#.#...#.....#...#n#.###.#.###.#.#######.#n#.#...#.....#.#.......#n#.###########.#.#####.#n#.............#.....s.#n#######################",
     level3: "#############################n#..........................#n###.###.###.###.###.###.###.#n#.#...#.#...#.#...#.#.......#n#.###.#.###.#.#.###.#.#####.#n#...#.#.....#.#.#.....#...#.#n###.#.#######.#.#######.#.#.#n#...#.........#.......#...#.#n#.###.#####.#########.###.#.#n#.....#...#.#.........#...#.#n#.#####.#.#.#########.###.#.#n#.#...#.#.#.....#.....#...#.#n#.#.#.#.#.#####.#.#####.#.#.#n#...#.#.....#...#.......#.#.#n#.#######.#.#.###########.#.#n#.......#.#.#.#...........#.#n#######.#.#.#.###############n#.......#...#..............s#n#############################",
     level4: "###################################n#................................#n#.#.###.###.###.###.###.###.###.###n#.#.#...#...#.#.....#.#...#.#...#s#n#.###.#.#.#.#.#.#####.#.#.###.#.#.#n#.....#.#.#.#.....#.#.#.#...#.#.#.#n#.#####.#.#.#####.#.#.#.#.#####.#.#n#.#.....#.#.....#.#.#.#.#.....#.#.#n#.#####.#.#####.#.#.#.#.#####.#.#.#n#.#.....#.......#.#.#.#.......#.#.#n#.#############.#.#.#.#########.#.#n#.............#.#...#...........#.#n#############.#.###############.#.#n#...........#.#.#...............#.#n#.#########.#.#.###############.#.#n#.........#...#.................#.#n#########.#.#####################.#n#.........#.......................#n###################################",
-    level5: "###########################################n#......#...........#.....#.........#.....#n#.###.#.#.#####.#.#.#.###.#.#####.#.#.###.#n#...#.#.#.#...#.#.#.#.#...#.#...#.#.#.#...#n#.###.#.#.#.#.#.#.#.#.#.###.#.#.#.#.#.#.###n#.#...#.#...#.#.#.#...#.#...#.#.#.#.#...#.#n#.#.#####.#.#.#.#.#####.#.#####.#.#.#####.#n#.#.#.....#.#.#.#...#...#.....#...#.....#.#n#.#.#.#####.#.#.###.#.#######.###.#.###.#.#n#.#.#.#...#...#...#.#...#...#.#...#.#...#.#n#.#.#.#.#.#######.#.###.#.#.#.#####.#.#.#.#n#.#.#...#.....#...#.....#.#.#.#.....#.#.#.#n#.###########.#.###.#######.#.#.#######.#.#n#.....#.....#.#.#...#.....#.#.#...#...#.#.#n#.###.#.#.#.#.#.###.#.###.#.#.###.#.#.#.#.#n#.#...#.#.#.#.#.#...#.#.#.#.#...#.#.#.#.#.#n#.###.#.#.#.###.#.###.#.#.#####.#.#.###.#.#n#.#...#...#.....#.#...#.#.....#.#.#...#...#n#.#.#######.#####.#.###.#####.#.#.###.###.#n#.............#.....#.......#...#.....#s..#n###########################################"
   };
 
   let gameLevel = levels[levelName];
   console.log("Current URL:", currentURL);
+  console.log("Level Name:", levelName);
   console.log("Game Level:", gameLevel); 
 
   if (!gameLevel) {
       console.error("Game level data not found in URL.");
       return;
   }
-  function tileSize(size) {
-    if (size == "p") {
-      return 18;
-    } else if (size == "m") {
-      return 14;
-    } else if (size == "g") {
-      return 12;
-    } else if (size == "e") {
-      return 8;
-    } 
-    else {
-      return 20;
+
+  function tileSize(sizeChar) {
+    switch (sizeChar) {
+      case 'p':
+        return 18;
+      case 'm':
+        return 14;
+      case 'g':
+        return 12;
+      case 'e':
+        return 8;
+      default:
+        return 14; // Default size if no match
     }
   }
 
-  let size = tileSize( currentURL.substring(currentURL.indexOf("game.html?#") + 11)[0]);
-  console.log("Tile size:", size);
+  const sizeChar = currentURL.charAt(currentURL.indexOf("level") + 6);
+  const size = tileSize(sizeChar);
+  console.log("Tile size:", size, "Size character:", sizeChar);
 
   function timer() {
     setInterval(() => {
       timeElapsed += 1;
-      timeDisplay.innerText = `Time elapsed: ${timeElapsed} s`;
+      timeDisplay[1].innerText = `Time elapsed: ${timeElapsed} s`;
     }, 1000);
   }
 
   function victory() {
     buttonsControl.style.display = "none";
     victoryPage.style.display = "flex";
-    timeDisplay.innerText = `Time of play: ${timeElapsed}s`;
+    timeDisplay[0].innerText = `Time of play: ${timeElapsed}s`;
     let timer = 10;
   
     setInterval(() => {
@@ -99,28 +104,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function captureCollisions() {
     let xAxis = 0;
-
     let yAxis = 0;
+    canvasHeight = 0;
+    canvasColumns = 0;
   
     for (const item of gameLevel) {
       if (item === "n") {
         yAxis += 1;
         xAxis = 0;
         canvasHeight += 1;
-      } else if (item === "#") {
-        collisions.wallX.push(xAxis);
-        collisions.wallY.push(yAxis);
-      } else if (item === "s") {
-        collisions.exit.push(xAxis, yAxis);
-      } else if (item == "@") {
-        player.x = xAxis;
-        player.y = yAxis;
+      } else {
+        if (item === "#") {
+          collisions.wallX.push(xAxis);
+          collisions.wallY.push(yAxis);
+        } else if (item === "s") {
+          collisions.exit.push(xAxis, yAxis);
+        } else if (item == "@") {
+          player.x = xAxis;
+          player.y = yAxis;
+        }
+        xAxis += 1;
+        canvasColumns = Math.max(canvasColumns, xAxis);
       }
-  
-      xAxis += 1;
     }
-    console.log("Collisions captured:", collisions);
-    console.log("Player initial position:", player);
+    console.log("Canvas columns:", canvasColumns);
+    console.log("Player start position:", player.x, player.y);
   }
   
   function setColor(item) {
@@ -145,12 +153,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (item === "n") {
         yAxis++;
         xAxis = 0;
-        canvasHeight++;
       } else {
+        setColor(item);
+        context.fillRect(xAxis * size, yAxis * size, size, size);
         xAxis++;
       }
-      setColor(item);
-    context.fillRect(xAxis * size, yAxis * size, size, size);
     }
     console.log("Scene rendered.");
   }
@@ -159,10 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
     context.clearRect(
       0,
       0,
-      canvasWidth * size,
-    (gameLevel.length / canvasWidth + 2) * size
+      canvasColumns * size,
+      (canvasHeight + 2) * size
     );
-    renderScene(size);
+    renderScene();
   
     if (
       collisions.exit[0] === player.x + player.movX &&
@@ -173,40 +180,54 @@ document.addEventListener('DOMContentLoaded', function() {
   
     context.fillStyle = colors.player;
   
+    let newX = player.x + player.movX;
+    let newY = player.y + player.movY;
+    let collisionDetected = false;
+
     for (let i = 0; i < collisions.wallY.length; i++) {
-      if (
-        collisions.wallY[i] === player.y + player.movY &&
-        collisions.wallX[i] === player.x + player.movX
-      ) {
-        player.movX = 0;
-        player.movY = 0;
+      if (collisions.wallY[i] === newY && collisions.wallX[i] === newX) {
+        collisionDetected = true;
+        break;
       }
     }
+
+    if (!collisionDetected) {
+      player.x = newX;
+      player.y = newY;
+    } else {
+      player.movX = 0;
+      player.movY = 0;
+    }
+
     context.fillRect(
-      (player.x + player.movX) * size,
-      (player.y + player.movY) * size,
+      player.x * size,
+      player.y * size,
       size,
       size
     );
     console.log("Player rendered at:", player.x, player.y);
   }
-  
+
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "ArrowRight":
-        player.movX += 1;
+        player.movX = 1;
+        player.movY = 0;
         break;
       case "ArrowLeft":
-        player.movX -= 1;
+        player.movX = -1;
+        player.movY = 0;
         break;
       case "ArrowUp":
-        player.movY -= 1;
+        player.movX = 0;
+        player.movY = -1;
         break;
       case "ArrowDown":
-        player.movY += 1;
+        player.movX = 0;
+        player.movY = 1;
         break;
       default:
-        break;
+        return; 
     }
     renderPlayer();
   });
@@ -214,9 +235,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function initialize() {
     timer();
     captureCollisions();
+    canvas.width = canvasColumns * size;
     canvas.height = (canvasHeight + 2) * size;
-    renderPlayer(size);
-    console.log("Game initialized.");
+    renderPlayer();
   }
 
   initialize();
