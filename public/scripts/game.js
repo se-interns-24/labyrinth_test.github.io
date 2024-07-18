@@ -96,9 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   
     setTimeout(() => {
-      const hostname = window.location.hostname;
-      const port = window.location.port;
-      window.location.href = `http://${hostname}:${port}`;
+      window.location.href = `http://${window.location.hostname}:${window.location.port}`;
     }, 10000);
   }
 
