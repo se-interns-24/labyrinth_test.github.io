@@ -123,18 +123,7 @@ app.post('/add-email', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${port} is already in use. Trying another port...`);
-    setTimeout(() => {
-      server.close();
-      server.listen(0); // Let the system pick an available port
-    }, 1000);
-  } else {
-    console.error('Server error:', err);
-  }
-});
