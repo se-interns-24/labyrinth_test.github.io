@@ -10,7 +10,7 @@ const dbConfig = {
   host: 'labyrinth-database.cjukaogw2e90.us-east-1.rds.amazonaws.com',
   user: 'admin',
   password: 'HashicorpInterns2024!',
-  database: 'labyrinth-database'
+  database: 'labyrinth-db'
 };
 
 const connection = mysql.createConnection(dbConfig);
