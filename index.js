@@ -26,7 +26,7 @@ connection.connect((err) => {
   const checkColumnQuery = `
     SELECT COUNT(*) AS count 
     FROM information_schema.columns 
-    WHERE table_schema = 'labyrinth-database' 
+    WHERE table_schema = 'labyrinth-db' 
       AND table_name = 'users' 
       AND column_name = 'counter';
   `;
@@ -57,7 +57,7 @@ connection.connect((err) => {
   const checkUniqueConstraintQuery = `
     SELECT COUNT(*) AS count
     FROM information_schema.table_constraints
-    WHERE table_schema = 'labyrinth-database' 
+    WHERE table_schema = 'labyrinth-db' 
       AND table_name = 'users' 
       AND constraint_type = 'UNIQUE'
       AND constraint_name = 'email';
