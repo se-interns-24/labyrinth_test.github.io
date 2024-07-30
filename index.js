@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 const dbConfig = {
   host: 'labyrinth-db.cj4e8sgic36d.us-east-1.rds.amazonaws.com',
   user: 'admin',
-  password: 'HashicorpInterns2024!',
+  password: 'HashicorpInterns2024',
   database: 'labyrinth-db'
 };
 
