@@ -7,7 +7,7 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 app.use(bodyParser.json());
 
 const dbConfig = {
-  host: 'labyrinth-db.cpkqksaiigbv.us-west-1.rds.amazonaws.com',
+  host: 'labyrinth-db.clo88cg6qi7j.us-east-2.rds.amazonaws.com',
   user: 'admin',
   password: 'HashicorpInterns2024',
   database: 'labyrinth-db'
